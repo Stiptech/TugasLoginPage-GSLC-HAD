@@ -1,98 +1,142 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from "react";
+import { View, Text, Pressable } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import {
+  AuthScreen,
+  Divider,
+  ErrorText,
+  Field,
+  GoogleButton,
+  Heading,
+  LinkText,
+  PasswordField,
+  PrimaryButton,
+  useToast,
+} from "@/components/auth-ui";
+import { DEMO_ACCOUNTS, verify } from "@/lib/accounts";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function Login() {
+  const { created } = useLocalSearchParams<{ created?: string }>();
+  const { show, node } = useToast();
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
+
+  // Pesan sesudah kembali dari halaman register
+  useEffect(() => {
+    if (created === "1") {
+      show("Account created. You can sign in now.", true);
+    } else if (created === "unsaved") {
+      show(
+        "Account created, but it could not be saved. Sign in with the demo account: sarah@sekolah.sch.id and sekolah123."
+      );
+    }
+  }, [created, show]);
+
+  function onGoogle() {
+    setGoogleBusy(true);
+    setTimeout(() => {
+      setGoogleBusy(false);
+      show("Google sign in is not connected in this demo.");
+    }, 800);
   }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
+
+  function onSubmit() {
+    setError("");
+    if (!email.trim()) return setError("Email is still empty.");
+    if (!password) return setError("Password is still empty.");
+
+    setBusy(true);
+    // Jeda singkat supaya terasa seperti proses login sungguhan
+    setTimeout(() => {
+      const ok = verify(email, password);
+      setBusy(false);
+      if (ok) {
+        setPassword("");
+        show("Signed in. This demo has no next page.", true);
+      } else {
+        setError("Wrong email or password.");
+      }
+    }, 700);
   }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <View className="flex-1 bg-[#FAF7F0]">
+      <AuthScreen>
+        <Heading title="Class notebook" sub="Sign in with your school account" />
+
+        <GoogleButton label="Sign in with Google" onPress={onGoogle} busy={googleBusy} />
+        <Divider />
+
+        <View className="gap-4">
+          <Field
+            label="Email"
+            value={email}
+            onChangeText={(t) => {
+              setEmail(t);
+              setError("");
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoComplete="username"
+            placeholder="nama@sekolah.sch.id"
+          />
+
+          <PasswordField
+            label="Password"
+            value={password}
+            onChangeText={(t) => {
+              setPassword(t);
+              setError("");
+            }}
+            autoComplete="current-password"
+            onSubmitEditing={onSubmit}
+            right={
+              <LinkText onPress={() => show("Password reset is not connected in this demo.")}>
+                Forgot password?
+              </LinkText>
+            }
+          />
+
+          <ErrorText text={error} />
+
+          <PrimaryButton label={busy ? "Signing in..." : "Sign in"} onPress={onSubmit} busy={busy} />
+        </View>
+
+        {/* Akun dummy: ketuk salah satu, email dan password terisi otomatis */}
+        <View className="mt-6 rounded-lg border border-[#E3E1D9] bg-white p-3">
+          <Text className="mb-2 text-xs text-[#6B6A63]">Demo accounts. Tap one to fill in the form.</Text>
+          {DEMO_ACCOUNTS.map((a) => (
+            <Pressable
+              key={a.email}
+              onPress={() => {
+                setEmail(a.email);
+                setPassword(a.password);
+                setError("");
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={"Fill in " + a.name}
+              className="flex-row items-center justify-between rounded-md px-2 py-2 active:bg-[#F4F3EF]"
+            >
+              <View className="flex-1 pr-2">
+                <Text className="text-sm text-[#1F1E1B]">{a.name}</Text>
+                <Text className="text-xs text-[#9C9A91]">{a.email}</Text>
+              </View>
+              <Text className="text-xs text-[#185FA5] underline">Fill in</Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <View className="mt-6 flex-row flex-wrap items-center justify-center gap-1">
+          <Text className="text-xs text-[#6B6A63]">No account yet?</Text>
+          <LinkText onPress={() => router.push("/register")}>Sign up here</LinkText>
+        </View>
+      </AuthScreen>
+      {node}
+    </View>
   );
 }
-
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
