@@ -87,6 +87,7 @@ export function Divider() {
 export function Field({
   label,
   right,
+  style,
   ...input
 }: TextInputProps & { label: string; right?: ReactNode }) {
   const [focus, setFocus] = useState(false);
@@ -100,7 +101,7 @@ export function Field({
         placeholderTextColor={C.faint}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        style={{ borderColor: focus ? C.blue : C.line }}
+        style={[{ borderColor: focus ? C.blue : C.line }, style]}
         className="rounded-lg border bg-white px-3 py-2 text-sm text-[#1F1E1B]"
         {...input}
       />

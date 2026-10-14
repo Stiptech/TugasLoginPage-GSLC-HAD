@@ -1,17 +1,15 @@
 import { Platform } from "react-native";
 import { sha256 } from "./sha256";
+import type { Role, Session } from "./types";
 
 // Akun dummy bawaan, selalu bisa dipakai login tanpa daftar dulu.
-// Nama dan email diambil dari gaya data guru di Weekly Plan.
-export const DEMO_ACCOUNTS = [
-  { name: "Sarah Wijaya", email: "sarah@sekolah.sch.id", password: "sekolah123" },
-  { name: "Budi Santoso", email: "budi@sekolah.sch.id", password: "budi12345" },
-  { name: "Rina Kartika", email: "rina@sekolah.sch.id", password: "rina12345" },
-  { name: "Admin Sekolah", email: "admin@sekolah.sch.id", password: "admin12345" },
+export const DEMO_ACCOUNTS: (Session & { password: string })[] = [
+  { name: "Rizky Pratama", email: "customer@bengkel.id", password: "customer123", role: "customer" },
+  { name: "Admin Bengkel", email: "admin@bengkel.id", password: "admin12345", role: "admin" },
 ];
-const STORAGE_KEY = "wp_demo_accounts";
+const STORAGE_KEY = "bengkel_demo_accounts";
 
-type Account = { name: string; email: string; salt: string; hash: string };
+type Account = { name: string; email: string; role: Role; salt: string; hash: string };
 
 // Di web, akun disimpan di localStorage. Di HP, akun hanya hidup di memori
 // selama aplikasi terbuka. Kalau mau awet di HP, pasang AsyncStorage:
@@ -60,16 +58,21 @@ export function emailTaken(email: string): boolean {
 export function saveAccount(name: string, email: string, password: string): boolean {
   const salt = randomSalt();
   const list = read();
-  list.push({ name, email: email.trim().toLowerCase(), salt, hash: sha256(salt + password) });
+  list.push({ name, email: email.trim().toLowerCase(), role: "customer", salt, hash: sha256(salt + password) });
   return write(list);
 }
 
-export function verify(email: string, password: string): boolean {
+// Mengembalikan data sesi kalau email dan password cocok, selain itu null.
+export function verify(email: string, password: string): Session | null {
   const e = email.trim().toLowerCase();
   const dummy = DEMO_ACCOUNTS.find((d) => d.email === e);
-  if (dummy) return password === dummy.password;
+  if (dummy) {
+    return password === dummy.password
+      ? { name: dummy.name, email: dummy.email, role: dummy.role }
+      : null;
+  }
 
   const akun = read().find((a) => a.email === e);
-  if (!akun) return false;
-  return sha256(akun.salt + password) === akun.hash;
+  if (!akun || sha256(akun.salt + password) !== akun.hash) return null;
+  return { name: akun.name, email: akun.email, role: akun.role };
 }
