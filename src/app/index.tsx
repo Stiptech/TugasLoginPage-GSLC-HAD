@@ -27,7 +27,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  // Pesan sesudah kembali dari halaman daftar
   useEffect(() => {
     if (created === "1") {
       show("Akun dibuat. Silakan masuk.", true);
@@ -44,13 +43,13 @@ export default function Login() {
     if (!password) return setError("Kata sandi masih kosong.");
 
     setBusy(true);
-    // Jeda singkat supaya terasa seperti proses masuk sungguhan
+
     setTimeout(() => {
       const sesi = verify(email, password);
       setBusy(false);
       if (sesi) {
         setPassword("");
-        // Halaman berganti sendiri lewat Stack.Protected di _layout.tsx
+
         signIn(sesi);
       } else {
         setError("Email atau kata sandi tidak cocok.");
@@ -62,8 +61,6 @@ export default function Login() {
     <View className="flex-1 bg-[#FAF7F0]">
       <AuthScreen>
         <Heading title={BENGKEL.nama} sub="Booking cuci, service, dan modif motormu" />
-
-        {/* Tiga layanan, biar kelihatan dari awal aplikasinya buat apa */}
         <View className="mb-7 flex-row gap-2">
           {KATEGORI_LIST.map((k) => (
             <View
@@ -76,7 +73,6 @@ export default function Login() {
             </View>
           ))}
         </View>
-
         <View className="gap-4">
           <Field
             label="Email"
@@ -91,7 +87,6 @@ export default function Login() {
             autoComplete="username"
             placeholder="nama@bengkel.id"
           />
-
           <PasswordField
             label="Kata sandi"
             value={password}
@@ -107,13 +102,9 @@ export default function Login() {
               </LinkText>
             }
           />
-
           <ErrorText text={error} />
-
           <PrimaryButton label={busy ? "Sedang masuk..." : "Masuk"} onPress={onSubmit} busy={busy} />
         </View>
-
-        {/* Akun demo: ketuk salah satu, email dan sandi terisi otomatis */}
         <View className="mt-6 rounded-lg border border-[#E3E1D9] bg-white p-3">
           <Text className="mb-2 text-xs text-[#6B6A63]">
             Akun demo. Ketuk salah satu untuk mengisi form.
@@ -140,7 +131,6 @@ export default function Login() {
             </Pressable>
           ))}
         </View>
-
         <View className="mt-6 flex-row flex-wrap items-center justify-center gap-1">
           <Text className="text-xs text-[#6B6A63]">Belum punya akun?</Text>
           <LinkText onPress={() => router.push("/register")}>Daftar di sini</LinkText>

@@ -15,17 +15,17 @@ export type Motor = {
 
 export type Tiket = {
   id: string;
-  nomor: string; // contoh: C-003
+  nomor: string;
   kategori: Kategori;
-  tanggal: string; // YYYY-MM-DD
+  tanggal: string;
   status: Status;
   motor: Motor;
   userEmail: string;
   userName: string;
-  paket?: string; // khusus cuci
-  keluhan?: string; // khusus service
-  jenisService?: string[]; // khusus service, bagian yang dikeluhkan
-  rincian?: string; // khusus modif
-  jenisModif?: string[]; // khusus modif
+  paket?: string;
+  keluhan?: string;
+  jenisService?: string[];
+  rincian?: string;
+  jenisModif?: string[];
   dibuat: number;
 };

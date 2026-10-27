@@ -2,7 +2,6 @@ import { Platform } from "react-native";
 import { sha256 } from "./sha256";
 import type { Role, Session } from "./types";
 
-// Akun dummy bawaan, selalu bisa dipakai login tanpa daftar dulu.
 export const DEMO_ACCOUNTS: (Session & { password: string })[] = [
   { name: "Rizky Pratama", email: "customer@bengkel.id", password: "customer123", role: "customer" },
   { name: "Admin Bengkel", email: "admin@bengkel.id", password: "admin12345", role: "admin" },
@@ -11,9 +10,6 @@ const STORAGE_KEY = "bengkel_demo_accounts";
 
 type Account = { name: string; email: string; role: Role; salt: string; hash: string };
 
-// Di web, akun disimpan di localStorage. Di HP, akun hanya hidup di memori
-// selama aplikasi terbuka. Kalau mau awet di HP, pasang AsyncStorage:
-//   npx expo install @react-native-async-storage/async-storage
 let memory: Account[] = [];
 
 function read(): Account[] {
@@ -54,7 +50,6 @@ export function emailTaken(email: string): boolean {
   return read().some((a) => a.email === e);
 }
 
-// true kalau akun berhasil disimpan
 export function saveAccount(name: string, email: string, password: string): boolean {
   const salt = randomSalt();
   const list = read();
@@ -62,7 +57,6 @@ export function saveAccount(name: string, email: string, password: string): bool
   return write(list);
 }
 
-// Mengembalikan data sesi kalau email dan password cocok, selain itu null.
 export function verify(email: string, password: string): Session | null {
   const e = email.trim().toLowerCase();
   const dummy = DEMO_ACCOUNTS.find((d) => d.email === e);

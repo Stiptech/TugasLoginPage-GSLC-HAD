@@ -7,7 +7,6 @@ import { KATEGORI, STATUS, TAHAPAN } from "@/lib/catalog";
 import { formatTanggal, nextDays } from "@/lib/date";
 import type { Kategori, Motor, Status, Tiket } from "@/lib/types";
 
-/* ---------- Kerangka halaman dengan judul ---------- */
 export function Page({
   title,
   sub,
@@ -52,7 +51,6 @@ export function Page({
   );
 }
 
-/* ---------- Kartu putih polos, tanpa bayangan ---------- */
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <View className={"rounded-xl border border-[#E3E1D9] bg-white p-4 " + className}>{children}</View>
@@ -71,7 +69,6 @@ export function Empty({ text }: { text: string }) {
   );
 }
 
-/* ---------- Chip pilihan ---------- */
 export function Chip({
   label,
   active,
@@ -100,7 +97,6 @@ export function ChipRow({ children }: { children: ReactNode }) {
   return <View className="flex-row flex-wrap gap-2">{children}</View>;
 }
 
-/* ---------- Badge status ---------- */
 export function StatusBadge({ status }: { status: Status }) {
   const s = STATUS[status];
   return (
@@ -112,7 +108,6 @@ export function StatusBadge({ status }: { status: Status }) {
   );
 }
 
-/* ---------- Bubble layanan, tiga berdampingan di beranda ---------- */
 export function ServiceBubble({ kategori, onPress }: { kategori: Kategori; onPress: () => void }) {
   const k = KATEGORI[kategori];
   return (
@@ -134,7 +129,6 @@ export function ServiceBubble({ kategori, onPress }: { kategori: Kategori; onPre
   );
 }
 
-/* ---------- Kartu layanan versi baris, dipakai di form booking ---------- */
 export function ServiceCard({ kategori, onPress }: { kategori: Kategori; onPress?: () => void }) {
   const k = KATEGORI[kategori];
   const body = (
@@ -160,7 +154,6 @@ export function ServiceCard({ kategori, onPress }: { kategori: Kategori; onPress
   );
 }
 
-/* ---------- Status antrian live per kategori ---------- */
 export function QueueNow({
   kategori,
   sedang,
@@ -190,7 +183,6 @@ export function QueueNow({
   );
 }
 
-/* ---------- Timeline tahapan pengerjaan ---------- */
 export function Timeline({ status }: { status: Status }) {
   if (status === "batal") {
     return (
@@ -237,7 +229,6 @@ export function Timeline({ status }: { status: Status }) {
   );
 }
 
-/* ---------- Baris kecil dengan ikon, untuk info bengkel ---------- */
 export function IconLine({ icon, text }: { icon: IconName; text: string }) {
   return (
     <View className="flex-row items-center gap-2 py-1">
@@ -247,12 +238,10 @@ export function IconLine({ icon, text }: { icon: IconName; text: string }) {
   );
 }
 
-/* ---------- Teks ringkas motor ---------- */
 export function motorLabel(m: Motor): string {
   return `${m.merk} ${m.model} · ${m.plat}`;
 }
 
-/* ---------- Tiket antrian ---------- */
 export function QueueTicket({ tiket, onPress }: { tiket: Tiket; onPress?: () => void }) {
   const k = KATEGORI[tiket.kategori];
   const body = (
@@ -279,7 +268,6 @@ export function QueueTicket({ tiket, onPress }: { tiket: Tiket; onPress?: () => 
   );
 }
 
-/* ---------- Pilih tanggal (7 hari ke depan) ---------- */
 export function DatePicker({ value, onChange }: { value: string; onChange: (iso: string) => void }) {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
@@ -312,7 +300,6 @@ export function DatePicker({ value, onChange }: { value: string; onChange: (iso:
   );
 }
 
-/* ---------- Baris label : isi ---------- */
 export function InfoRow({
   label,
   value,
@@ -320,7 +307,7 @@ export function InfoRow({
 }: {
   label: string;
   value: string;
-  plat?: boolean; // tampilkan nilainya bergaya plat nomor
+  plat?: boolean;
 }) {
   return (
     <View className="flex-row justify-between gap-4 py-2">

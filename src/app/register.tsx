@@ -36,7 +36,7 @@ export default function Register() {
     }
 
     setBusy(true);
-    // Jeda singkat supaya terasa seperti proses daftar sungguhan
+
     setTimeout(() => {
       const tersimpan = saveAccount(nama, mail, password);
       router.replace({ pathname: "/", params: { created: tersimpan ? "1" : "unsaved" } });
@@ -52,7 +52,6 @@ export default function Register() {
           title="Daftar akun"
           sub="Sesudah daftar, kamu bisa simpan motor di garasi dan langsung ambil nomor antrian."
         />
-
         <View className="gap-4">
           <Field
             label="Nama lengkap"
@@ -64,7 +63,6 @@ export default function Register() {
             autoComplete="name"
             placeholder="Nama yang dipanggil di bengkel"
           />
-
           <Field
             label="Email"
             value={email}
@@ -78,7 +76,6 @@ export default function Register() {
             autoComplete="email"
             placeholder="nama@email.com"
           />
-
           <PasswordField
             label="Kata sandi"
             value={password}
@@ -90,16 +87,13 @@ export default function Register() {
             placeholder="Minimal delapan huruf"
             onSubmitEditing={onSubmit}
           />
-
           <ErrorText text={error} />
-
           <PrimaryButton
             label={busy ? "Sedang mendaftar..." : "Daftar"}
             onPress={onSubmit}
             busy={busy}
           />
         </View>
-
         <View className="mt-6 flex-row flex-wrap items-center justify-center gap-1">
           <Text className="text-xs text-[#6B6A63]">Sudah punya akun.</Text>
           <LinkText onPress={() => router.replace("/")}>Masuk di sini</LinkText>

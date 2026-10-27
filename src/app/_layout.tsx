@@ -12,8 +12,6 @@ import { PlusJakartaSans_700Bold } from "@expo-google-fonts/plus-jakarta-sans/70
 import { StoreProvider, useSession } from "@/hooks/use-store";
 import "../../global.css";
 
-// Splash ditahan sampai font selesai dimuat, supaya teks tidak sempat
-// tampil dengan font sistem lalu berkedip ganti.
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function RootNav() {
@@ -26,13 +24,10 @@ function RootNav() {
         contentStyle: { backgroundColor: "#FAF7F0" },
       }}
     >
-      {/* Belum login */}
       <Stack.Protected guard={!session}>
         <Stack.Screen name="index" />
         <Stack.Screen name="register" />
       </Stack.Protected>
-
-      {/* Sudah login. Di branch ini cuma ada beranda, tanpa peduli perannya. */}
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="home" />
       </Stack.Protected>
@@ -41,8 +36,6 @@ function RootNav() {
 }
 
 export default function RootLayout() {
-  // Nama keluarga di sini harus sama persis dengan yang dipakai
-  // tailwind.config.js. Satu berkas font = satu ketebalan.
   const [siap, error] = useFonts({
     Jakarta: PlusJakartaSans_400Regular,
     JakartaMedium: PlusJakartaSans_500Medium,
@@ -53,8 +46,6 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    // Kalau font gagal dimuat, aplikasi tetap jalan dengan font sistem
-    // daripada berhenti di splash selamanya.
     if (siap || error) SplashScreen.hideAsync().catch(() => {});
   }, [siap, error]);
 

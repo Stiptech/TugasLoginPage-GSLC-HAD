@@ -1,10 +1,5 @@
 import { View, type ViewStyle } from "react-native";
 
-// Ikon outline tipis digambar pakai View biasa, jadi tidak perlu library ikon
-// atau react-native-svg. Semua potongan diposisikan lewat titik tengahnya
-// supaya hasil putarannya tetap pas, karena rotate di React Native berputar
-// pada titik tengah elemen.
-
 export type IconName =
   | "home"
   | "ticket"
@@ -23,12 +18,11 @@ export type IconName =
 
 type Props = { name: IconName; color?: string; size?: number };
 
-const W = 1.5; // tebal garis
+const W = 1.5;
 
 export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
   const s = size;
 
-  // Satu potongan ikon, diletakkan lewat titik tengah (cx, cy).
   function piece(
     cx: number,
     cy: number,
@@ -48,14 +42,12 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
     };
   }
 
-  // Garis lurus setebal W.
   const bar = (cx: number, cy: number, panjang: number, rot?: string): ViewStyle =>
     piece(cx, cy, panjang * s, W, { backgroundColor: color, rot });
 
   const barTegak = (cx: number, cy: number, panjang: number): ViewStyle =>
     piece(cx, cy, W, panjang * s, { backgroundColor: color });
 
-  // Lingkaran kosong.
   const ring = (cx: number, cy: number, d: number): ViewStyle =>
     piece(cx, cy, d * s, d * s, {
       borderRadius: (d * s) / 2,
@@ -66,7 +58,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
   const box: ViewStyle = { width: s, height: s };
 
   switch (name) {
-    // Rumah: atap berupa sudut belah ketupat, badan rumah kotak terbuka di atas.
     case "home":
       return (
         <View style={box}>
@@ -90,7 +81,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Tiket: kotak dengan garis sobek putus-putus di tengah.
     case "ticket":
       return (
         <View style={box}>
@@ -107,7 +97,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Motor: dua roda, rangka, dan setang.
     case "bike":
       return (
         <View style={box}>
@@ -118,7 +107,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Orang: kepala dan bahu.
     case "user":
       return (
         <View style={box}>
@@ -135,7 +123,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Tetes air: kotak dengan tiga sudut tumpul, diputar supaya ujung runcingnya ke atas.
     case "droplet":
       return (
         <View style={box}>
@@ -153,7 +140,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Kunci pas: kepala bulat di kiri atas, gagang miring ke kanan bawah.
     case "wrench":
       return (
         <View style={box}>
@@ -162,7 +148,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Bendera: tiang tegak dengan kain di atas.
     case "flag":
       return (
         <View style={box}>
@@ -192,7 +177,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Jam: lingkaran dengan dua jarum.
     case "clock":
       return (
         <View style={box}>
@@ -218,7 +202,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
         </View>
       );
 
-    // Tempat sampah: tutup, pegangan, dan badan.
     case "trash":
       return (
         <View style={box}>
@@ -247,7 +230,6 @@ export function Icon({ name, color = "#1F1E1B", size = 22 }: Props) {
   }
 }
 
-// Ikon layanan dipakai di beranda, form booking, dan halaman masuk.
 export const KATEGORI_ICON: Record<string, IconName> = {
   cuci: "droplet",
   service: "wrench",

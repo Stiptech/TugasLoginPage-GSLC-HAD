@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, TextInput, View, type TextInputProps } from "react-native";
 import { Text } from "@/components/text";
 
-// Palet dasar aplikasi, dipakai untuk nilai warna yang tidak lewat kelas Tailwind.
 export const C = {
   bg: "#FAF7F0",
   ink: "#1F1E1B",
@@ -13,7 +12,6 @@ export const C = {
   red: "#E24B4A",
 };
 
-/* ---------- Kerangka halaman ---------- */
 export function AuthScreen({ children }: { children: ReactNode }) {
   return (
     <KeyboardAvoidingView
@@ -39,7 +37,6 @@ export function Heading({ title, sub }: { title: string; sub: string }) {
   );
 }
 
-/* ---------- Tombol Google (belum tersambung di demo ini) ---------- */
 export function GoogleButton({
   label,
   onPress,
@@ -75,7 +72,6 @@ export function Divider() {
   );
 }
 
-/* ---------- Kolom isian ---------- */
 export function Field({
   label,
   right,
@@ -185,7 +181,6 @@ export function LinkText({ children, onPress }: { children: ReactNode; onPress: 
   );
 }
 
-/* ---------- Pesan singkat di bagian bawah layar ---------- */
 export function useToast() {
   const [toast, setToast] = useState<{ text: string; success: boolean } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);

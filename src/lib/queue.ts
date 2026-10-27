@@ -1,12 +1,11 @@
 import type { Kategori, Tiket } from "./types";
 
 export type Ringkasan = {
-  sedang: string | null; // nomor yang sedang dikerjakan
+  sedang: string | null;
   menunggu: number;
   selesai: number;
 };
 
-// Ringkasan antrian satu kategori pada satu tanggal.
 export function ringkasAntrian(
   tickets: Tiket[],
   kategori: Kategori,

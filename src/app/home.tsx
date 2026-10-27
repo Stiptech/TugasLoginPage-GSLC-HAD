@@ -33,7 +33,6 @@ export default function Home() {
     [tickets, hari]
   );
 
-  // Branch ini cuma memuat beranda, jadi layar booking dan tiket belum ada.
   const belumAda = (nama: string) => show(`Halaman ${nama} belum ada di branch ini.`);
 
   return (
@@ -52,7 +51,6 @@ export default function Home() {
           </Pressable>
         }
       >
-        {/* Tiga bubble layanan berdampingan */}
         <View className="flex-row gap-3">
           {KATEGORI_LIST.map((k) => (
             <ServiceBubble
@@ -62,7 +60,6 @@ export default function Home() {
             />
           ))}
         </View>
-
         <SectionTitle>Antrian bengkel hari ini</SectionTitle>
         <View className="flex-row gap-3">
           {antrian.map(({ k, r }) => (
@@ -72,7 +69,6 @@ export default function Home() {
         <Text className="mt-2 text-xs text-[#9C9A91]">
           Nomor di atas yang sedang dipanggil. {formatTanggal(hari)}.
         </Text>
-
         <SectionTitle>Antrianmu</SectionTitle>
         {aktif.length === 0 ? (
           <Empty text="Belum ada antrian aktif. Pilih salah satu layanan di atas." />
@@ -103,7 +99,6 @@ export default function Home() {
             />
           </View>
         </Card>
-
         <SectionTitle>Merk yang dilayani</SectionTitle>
         <ChipRow>
           {MERK_LIST.map((m) => (

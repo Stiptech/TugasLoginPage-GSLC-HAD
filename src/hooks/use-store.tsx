@@ -3,9 +3,6 @@ import { KATEGORI } from "@/lib/catalog";
 import { today } from "@/lib/date";
 import type { Kategori, Motor, Session, Status, Tiket } from "@/lib/types";
 
-// Semua data disimpan di memori (hilang saat aplikasi ditutup).
-// Saat backend siap, cukup ganti isi fungsi di provider ini dengan panggilan API.
-
 export type BookingInput = {
   kategori: Kategori;
   tanggal: string;
@@ -21,7 +18,7 @@ type Store = {
   session: Session | null;
   signIn: (s: Session) => void;
   signOut: () => void;
-  tickets: Tiket[]; // semua tiket (dipakai admin)
+  tickets: Tiket[];
   myTickets: Tiket[];
   createTicket: (input: BookingInput) => Tiket;
   setStatus: (id: string, status: Status) => void;
@@ -36,8 +33,6 @@ const Ctx = createContext<Store | null>(null);
 let seq = 100;
 const newId = () => `${Date.now().toString(36)}-${(seq++).toString(36)}`;
 
-// Nomor antrian: prefix kategori + urutan per kategori per tanggal.
-// Tiket batal tetap dihitung supaya nomor tidak dipakai ulang.
 export function nextQueueNumber(tickets: Tiket[], kategori: Kategori, tanggal: string): string {
   const n = tickets.filter((t) => t.kategori === kategori && t.tanggal === tanggal).length + 1;
   return `${KATEGORI[kategori].prefix}-${String(n).padStart(3, "0")}`;
@@ -54,7 +49,6 @@ function seedGarage(): Record<string, Motor[]> {
   };
 }
 
-// Beberapa tiket pelanggan lain supaya dashboard admin tidak kosong.
 function seedTickets(): Tiket[] {
   const t = today();
   const base = { tanggal: t, dibuat: Date.now() - 3_600_000 };
