@@ -1,64 +1,59 @@
 import { useEffect, useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { Pressable, View } from "react-native";
+import { Text } from "@/components/text";
 import { router, useLocalSearchParams } from "expo-router";
 import {
   AuthScreen,
-  Divider,
   ErrorText,
   Field,
-  GoogleButton,
   Heading,
   LinkText,
   PasswordField,
   PrimaryButton,
   useToast,
 } from "@/components/auth-ui";
+import { Icon, KATEGORI_ICON } from "@/components/icons";
 import { DEMO_ACCOUNTS, verify } from "@/lib/accounts";
+import { BENGKEL, KATEGORI, KATEGORI_LIST } from "@/lib/catalog";
+import { useSession } from "@/hooks/use-store";
 
 export default function Login() {
   const { created } = useLocalSearchParams<{ created?: string }>();
   const { show, node } = useToast();
+  const { signIn } = useSession();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [googleBusy, setGoogleBusy] = useState(false);
 
-  // Pesan sesudah kembali dari halaman register
+  // Pesan sesudah kembali dari halaman daftar
   useEffect(() => {
     if (created === "1") {
-      show("Account created. You can sign in now.", true);
+      show("Akun dibuat. Silakan masuk.", true);
     } else if (created === "unsaved") {
       show(
-        "Account created, but it could not be saved. Sign in with the demo account: sarah@sekolah.sch.id and sekolah123."
+        "Akun dibuat tapi gagal disimpan. Pakai akun demo: customer@bengkel.id dan customer123."
       );
     }
   }, [created, show]);
 
-  function onGoogle() {
-    setGoogleBusy(true);
-    setTimeout(() => {
-      setGoogleBusy(false);
-      show("Google sign in is not connected in this demo.");
-    }, 800);
-  }
-
   function onSubmit() {
     setError("");
-    if (!email.trim()) return setError("Email is still empty.");
-    if (!password) return setError("Password is still empty.");
+    if (!email.trim()) return setError("Email masih kosong.");
+    if (!password) return setError("Kata sandi masih kosong.");
 
     setBusy(true);
-    // Jeda singkat supaya terasa seperti proses login sungguhan
+    // Jeda singkat supaya terasa seperti proses masuk sungguhan
     setTimeout(() => {
-      const ok = verify(email, password);
+      const sesi = verify(email, password);
       setBusy(false);
-      if (ok) {
+      if (sesi) {
         setPassword("");
-        show("Signed in. This demo has no next page.", true);
+        // Halaman berganti sendiri lewat Stack.Protected di _layout.tsx
+        signIn(sesi);
       } else {
-        setError("Wrong email or password.");
+        setError("Email atau kata sandi tidak cocok.");
       }
     }, 700);
   }
@@ -66,10 +61,21 @@ export default function Login() {
   return (
     <View className="flex-1 bg-[#FAF7F0]">
       <AuthScreen>
-        <Heading title="Class notebook" sub="Sign in with your school account" />
+        <Heading title={BENGKEL.nama} sub="Booking cuci, service, dan modif motormu" />
 
-        <GoogleButton label="Sign in with Google" onPress={onGoogle} busy={googleBusy} />
-        <Divider />
+        {/* Tiga layanan, biar kelihatan dari awal aplikasinya buat apa */}
+        <View className="mb-7 flex-row gap-2">
+          {KATEGORI_LIST.map((k) => (
+            <View
+              key={k}
+              style={{ backgroundColor: KATEGORI[k].lembut }}
+              className="flex-1 items-center rounded-lg py-3"
+            >
+              <Icon name={KATEGORI_ICON[k]} color={KATEGORI[k].warna} size={20} />
+              <Text className="mt-1 text-[11px] text-[#6B6A63]">{KATEGORI[k].pendek}</Text>
+            </View>
+          ))}
+        </View>
 
         <View className="gap-4">
           <Field
@@ -83,11 +89,11 @@ export default function Login() {
             autoCapitalize="none"
             autoCorrect={false}
             autoComplete="username"
-            placeholder="nama@sekolah.sch.id"
+            placeholder="nama@bengkel.id"
           />
 
           <PasswordField
-            label="Password"
+            label="Kata sandi"
             value={password}
             onChangeText={(t) => {
               setPassword(t);
@@ -96,20 +102,22 @@ export default function Login() {
             autoComplete="current-password"
             onSubmitEditing={onSubmit}
             right={
-              <LinkText onPress={() => show("Password reset is not connected in this demo.")}>
-                Forgot password?
+              <LinkText onPress={() => show("Reset kata sandi belum tersambung di demo ini.")}>
+                Lupa sandi
               </LinkText>
             }
           />
 
           <ErrorText text={error} />
 
-          <PrimaryButton label={busy ? "Signing in..." : "Sign in"} onPress={onSubmit} busy={busy} />
+          <PrimaryButton label={busy ? "Sedang masuk..." : "Masuk"} onPress={onSubmit} busy={busy} />
         </View>
 
-        {/* Akun dummy: ketuk salah satu, email dan password terisi otomatis */}
+        {/* Akun demo: ketuk salah satu, email dan sandi terisi otomatis */}
         <View className="mt-6 rounded-lg border border-[#E3E1D9] bg-white p-3">
-          <Text className="mb-2 text-xs text-[#6B6A63]">Demo accounts. Tap one to fill in the form.</Text>
+          <Text className="mb-2 text-xs text-[#6B6A63]">
+            Akun demo. Ketuk salah satu untuk mengisi form.
+          </Text>
           {DEMO_ACCOUNTS.map((a) => (
             <Pressable
               key={a.email}
@@ -119,21 +127,23 @@ export default function Login() {
                 setError("");
               }}
               accessibilityRole="button"
-              accessibilityLabel={"Fill in " + a.name}
+              accessibilityLabel={"Isi form dengan " + a.name}
               className="flex-row items-center justify-between rounded-md px-2 py-2 active:bg-[#F4F3EF]"
             >
               <View className="flex-1 pr-2">
                 <Text className="text-sm text-[#1F1E1B]">{a.name}</Text>
-                <Text className="text-xs text-[#9C9A91]">{a.email}</Text>
+                <Text className="text-xs text-[#9C9A91]">
+                  {a.email} · {a.role === "admin" ? "admin bengkel" : "pelanggan"}
+                </Text>
               </View>
-              <Text className="text-xs text-[#185FA5] underline">Fill in</Text>
+              <Text className="text-xs text-[#185FA5] underline">Isi</Text>
             </Pressable>
           ))}
         </View>
 
         <View className="mt-6 flex-row flex-wrap items-center justify-center gap-1">
-          <Text className="text-xs text-[#6B6A63]">No account yet?</Text>
-          <LinkText onPress={() => router.push("/register")}>Sign up here</LinkText>
+          <Text className="text-xs text-[#6B6A63]">Belum punya akun?</Text>
+          <LinkText onPress={() => router.push("/register")}>Daftar di sini</LinkText>
         </View>
       </AuthScreen>
       {node}

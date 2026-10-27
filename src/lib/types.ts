@@ -24,6 +24,7 @@ export type Tiket = {
   userName: string;
   paket?: string; // khusus cuci
   keluhan?: string; // khusus service
+  jenisService?: string[]; // khusus service, bagian yang dikeluhkan
   rincian?: string; // khusus modif
   jenisModif?: string[]; // khusus modif
   dibuat: number;

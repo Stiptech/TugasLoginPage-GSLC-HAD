@@ -1,16 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-  type TextInputProps,
-} from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, TextInput, View, type TextInputProps } from "react-native";
+import { Text } from "@/components/text";
 
-// Warna disalin dari halaman login Weekly Plan.
+// Palet dasar aplikasi, dipakai untuk nilai warna yang tidak lewat kelas Tailwind.
 export const C = {
   bg: "#FAF7F0",
   ink: "#1F1E1B",
@@ -102,7 +94,7 @@ export function Field({
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         style={[{ borderColor: focus ? C.blue : C.line }, style]}
-        className="rounded-lg border bg-white px-3 py-2 text-sm text-[#1F1E1B]"
+        className="rounded-lg border bg-white px-3 py-2 font-normal text-sm text-[#1F1E1B]"
         {...input}
       />
     </View>
@@ -133,7 +125,7 @@ export function PasswordField({
           placeholderTextColor={C.faint}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          className="flex-1 px-3 py-2 text-sm text-[#1F1E1B]"
+          className="flex-1 px-3 py-2 font-normal text-sm text-[#1F1E1B]"
           {...input}
         />
         <Pressable

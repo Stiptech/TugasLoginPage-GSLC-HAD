@@ -12,6 +12,7 @@ export type BookingInput = {
   motor: Motor;
   paket?: string;
   keluhan?: string;
+  jenisService?: string[];
   rincian?: string;
   jenisModif?: string[];
 };
