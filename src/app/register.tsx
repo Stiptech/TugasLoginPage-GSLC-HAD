@@ -4,6 +4,7 @@ import { Text } from "@/components/text";
 import { router } from "expo-router";
 import {
   AuthScreen,
+  ErrorText,
   Field,
   Heading,
   LinkText,
@@ -11,27 +12,28 @@ import {
   PrimaryButton,
 } from "@/components/auth-ui";
 import { emailTaken, saveAccount } from "@/lib/accounts";
-import { adaError, validasiDaftar, type ErrorForm } from "@/lib/validasi";
 
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<ErrorForm>({});
+  const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   function onSubmit() {
+    setError("");
     const nama = name.trim();
     const mail = email.trim();
 
-    const hasil = validasiDaftar(nama, mail, password);
-
-    if (!hasil.email && emailTaken(mail)) {
-      hasil.email = "Email ini sudah terdaftar. Coba masuk, atau pakai email lain.";
+    if (!nama) return setError("Nama lengkap masih kosong.");
+    if (!mail) return setError("Email masih kosong.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
+      return setError("Format email belum benar. Contoh: nama@email.com");
     }
-
-    setErrors(hasil);
-    if (adaError(hasil)) return;
+    if (password.length < 8) return setError("Kata sandi minimal delapan huruf.");
+    if (emailTaken(mail)) {
+      return setError("Email ini sudah terdaftar. Coba masuk, atau pakai email lain.");
+    }
 
     setBusy(true);
 
@@ -40,6 +42,8 @@ export default function Register() {
       router.replace({ pathname: "/", params: { created: tersimpan ? "1" : "unsaved" } });
     }, 700);
   }
+
+  const clear = () => setError("");
 
   return (
     <View className="flex-1 bg-[#FAF7F0]">
@@ -54,9 +58,8 @@ export default function Register() {
             value={name}
             onChangeText={(t) => {
               setName(t);
-              setErrors({ ...errors, nama: undefined });
+              clear();
             }}
-            error={errors.nama}
             autoComplete="name"
             placeholder="Nama yang dipanggil di bengkel"
           />
@@ -65,9 +68,8 @@ export default function Register() {
             value={email}
             onChangeText={(t) => {
               setEmail(t);
-              setErrors({ ...errors, email: undefined });
+              clear();
             }}
-            error={errors.email}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -79,13 +81,13 @@ export default function Register() {
             value={password}
             onChangeText={(t) => {
               setPassword(t);
-              setErrors({ ...errors, password: undefined });
+              clear();
             }}
-            error={errors.password}
             autoComplete="new-password"
-            placeholder="Minimal 8 karakter, ada huruf dan angka"
+            placeholder="Minimal delapan huruf"
             onSubmitEditing={onSubmit}
           />
+          <ErrorText text={error} />
           <PrimaryButton
             label={busy ? "Sedang mendaftar..." : "Daftar"}
             onPress={onSubmit}

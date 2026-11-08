@@ -72,24 +72,13 @@ export function Divider() {
   );
 }
 
-function PesanError({ pesan }: { pesan?: string }) {
-  if (!pesan) return null;
-  return (
-    <Text accessibilityRole="alert" className="mt-1 text-xs text-[#B23A39]">
-      {pesan}
-    </Text>
-  );
-}
-
 export function Field({
   label,
   right,
   style,
-  error,
   ...input
-}: TextInputProps & { label: string; right?: ReactNode; error?: string }) {
+}: TextInputProps & { label: string; right?: ReactNode }) {
   const [focus, setFocus] = useState(false);
-  const warnaGaris = error ? C.red : focus ? C.blue : C.line;
   return (
     <View>
       <View className="mb-1 flex-row items-center justify-between">
@@ -100,11 +89,10 @@ export function Field({
         placeholderTextColor={C.faint}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        style={[{ borderColor: warnaGaris }, style]}
+        style={[{ borderColor: focus ? C.blue : C.line }, style]}
         className="rounded-lg border bg-white px-3 py-2 font-normal text-sm text-[#1F1E1B]"
         {...input}
       />
-      <PesanError pesan={error} />
     </View>
   );
 }
@@ -112,12 +100,10 @@ export function Field({
 export function PasswordField({
   label,
   right,
-  error,
   ...input
-}: TextInputProps & { label: string; right?: ReactNode; error?: string }) {
+}: TextInputProps & { label: string; right?: ReactNode }) {
   const [focus, setFocus] = useState(false);
   const [visible, setVisible] = useState(false);
-  const warnaGaris = error ? C.red : focus ? C.blue : C.line;
   return (
     <View>
       <View className="mb-1 flex-row items-center justify-between">
@@ -125,7 +111,7 @@ export function PasswordField({
         {right}
       </View>
       <View
-        style={{ borderColor: warnaGaris }}
+        style={{ borderColor: focus ? C.blue : C.line }}
         className="flex-row items-center rounded-lg border bg-white"
       >
         <TextInput
@@ -148,7 +134,6 @@ export function PasswordField({
           <Text className="text-xs text-[#9C9A91]">{visible ? "Hide" : "Show"}</Text>
         </Pressable>
       </View>
-      <PesanError pesan={error} />
     </View>
   );
 }

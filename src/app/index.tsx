@@ -16,7 +16,6 @@ import { Icon, KATEGORI_ICON } from "@/components/icons";
 import { DEMO_ACCOUNTS, verify } from "@/lib/accounts";
 import { BENGKEL, KATEGORI, KATEGORI_LIST } from "@/lib/catalog";
 import { useSession } from "@/hooks/use-store";
-import { adaError, validasiLogin, type ErrorForm } from "@/lib/validasi";
 
 export default function Login() {
   const { created } = useLocalSearchParams<{ created?: string }>();
@@ -25,8 +24,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<ErrorForm>({});
-  const [errorUmum, setErrorUmum] = useState("");
+  const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -40,10 +38,9 @@ export default function Login() {
   }, [created, show]);
 
   function onSubmit() {
-    setErrorUmum("");
-    const hasil = validasiLogin(email, password);
-    setErrors(hasil);
-    if (adaError(hasil)) return;
+    setError("");
+    if (!email.trim()) return setError("Email masih kosong.");
+    if (!password) return setError("Kata sandi masih kosong.");
 
     setBusy(true);
 
@@ -55,7 +52,7 @@ export default function Login() {
 
         signIn(sesi);
       } else {
-        setErrorUmum("Email atau kata sandi tidak cocok.");
+        setError("Email atau kata sandi tidak cocok.");
       }
     }, 700);
   }
@@ -82,10 +79,8 @@ export default function Login() {
             value={email}
             onChangeText={(t) => {
               setEmail(t);
-              setErrors({ ...errors, email: undefined });
-              setErrorUmum("");
+              setError("");
             }}
-            error={errors.email}
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
@@ -97,10 +92,8 @@ export default function Login() {
             value={password}
             onChangeText={(t) => {
               setPassword(t);
-              setErrors({ ...errors, password: undefined });
-              setErrorUmum("");
+              setError("");
             }}
-            error={errors.password}
             autoComplete="current-password"
             onSubmitEditing={onSubmit}
             right={
@@ -109,7 +102,7 @@ export default function Login() {
               </LinkText>
             }
           />
-          <ErrorText text={errorUmum} />
+          <ErrorText text={error} />
           <PrimaryButton label={busy ? "Sedang masuk..." : "Masuk"} onPress={onSubmit} busy={busy} />
         </View>
         <View className="mt-6 rounded-lg border border-[#E3E1D9] bg-white p-3">
@@ -122,8 +115,7 @@ export default function Login() {
               onPress={() => {
                 setEmail(a.email);
                 setPassword(a.password);
-                setErrors({});
-                setErrorUmum("");
+                setError("");
               }}
               accessibilityRole="button"
               accessibilityLabel={"Isi form dengan " + a.name}
