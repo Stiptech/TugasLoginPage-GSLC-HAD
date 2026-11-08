@@ -26,3 +26,13 @@ export function ringkasAntrian(
 export function urutNomor(a: Tiket, b: Tiket): number {
   return a.nomor < b.nomor ? -1 : a.nomor > b.nomor ? 1 : 0;
 }
+
+export function antrianDiDepan(tickets: Tiket[], tiket: Tiket): number {
+  return tickets.filter(
+    (t) =>
+      t.kategori === tiket.kategori &&
+      t.tanggal === tiket.tanggal &&
+      (t.status === "menunggu" || t.status === "dikerjakan") &&
+      t.nomor < tiket.nomor
+  ).length;
+}

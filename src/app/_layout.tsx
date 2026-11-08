@@ -30,6 +30,8 @@ function RootNav() {
       </Stack.Protected>
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="home" />
+        <Stack.Screen name="tiket" />
+        <Stack.Screen name="profil" />
       </Stack.Protected>
     </Stack>
   );

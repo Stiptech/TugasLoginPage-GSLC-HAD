@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
+import { router } from "expo-router";
 import { Text } from "@/components/text";
 import {
   Card,
@@ -14,13 +15,14 @@ import {
   ServiceBubble,
 } from "@/components/app-ui";
 import { useToast } from "@/components/auth-ui";
+import { TabBar } from "@/components/tab-bar";
 import { BENGKEL, KATEGORI, KATEGORI_LIST, MERK_LIST } from "@/lib/catalog";
 import { formatTanggal, today } from "@/lib/date";
 import { ringkasAntrian } from "@/lib/queue";
 import { useGarage, useSession, useTickets } from "@/hooks/use-store";
 
 export default function Home() {
-  const { session, signOut } = useSession();
+  const { session } = useSession();
   const { myTickets, tickets } = useTickets();
   const { garage } = useGarage();
   const { show, node } = useToast();
@@ -33,30 +35,20 @@ export default function Home() {
     [tickets, hari]
   );
 
-  const belumAda = (nama: string) => show(`Halaman ${nama} belum ada di branch ini.`);
+  const belumAda = (nama: string) => show(`Halaman booking ${nama} belum dibuat di tahap ini.`);
 
   return (
     <View className="flex-1 bg-[#FAF7F0]">
       <Page
         title={`Halo, ${session?.name.split(" ")[0] ?? ""}`}
         sub="Mau diapain motormu hari ini"
-        right={
-          <Pressable
-            onPress={signOut}
-            accessibilityRole="button"
-            hitSlop={8}
-            className="rounded-lg border border-[#E3E1D9] bg-white px-3 py-1.5 active:bg-[#F4F3EF]"
-          >
-            <Text className="text-xs text-[#6B6A63]">Keluar</Text>
-          </Pressable>
-        }
       >
         <View className="flex-row gap-3">
           {KATEGORI_LIST.map((k) => (
             <ServiceBubble
               key={k}
               kategori={k}
-              onPress={() => belumAda(`booking ${KATEGORI[k].pendek.toLowerCase()}`)}
+              onPress={() => belumAda(KATEGORI[k].pendek.toLowerCase())}
             />
           ))}
         </View>
@@ -75,7 +67,7 @@ export default function Home() {
         ) : (
           <View className="gap-3">
             {aktif.map((t) => (
-              <QueueTicket key={t.id} tiket={t} onPress={() => belumAda("detail tiket")} />
+              <QueueTicket key={t.id} tiket={t} onPress={() => router.replace("/tiket")} />
             ))}
           </View>
         )}
@@ -102,13 +94,14 @@ export default function Home() {
         <SectionTitle>Merk yang dilayani</SectionTitle>
         <ChipRow>
           {MERK_LIST.map((m) => (
-            <Chip key={m} label={m} active={false} onPress={() => belumAda("garasi")} />
+            <Chip key={m} label={m} active={false} onPress={() => router.replace("/profil")} />
           ))}
         </ChipRow>
         <Text className="mt-2 text-xs text-[#9C9A91]">
           Motor sport dan skuter dari merk di atas, suku cadangnya ada di tempat.
         </Text>
       </Page>
+      <TabBar aktif="/home" />
       {node}
     </View>
   );

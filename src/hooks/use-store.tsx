@@ -77,6 +77,18 @@ function seedTickets(): Tiket[] {
     },
     {
       ...base,
+      id: "seed-4",
+      nomor: "S-003",
+      kategori: "service",
+      status: "menunggu",
+      keluhan: "Mesin kasar saat digas dan ada bunyi tek-tek dari bagian atas mesin.",
+      jenisService: ["Mesin", "Service rutin"],
+      userEmail: DEMO_EMAIL,
+      userName: "Rizky Pratama",
+      motor: { id: "m-demo-1", merk: "Yamaha", tipe: "sport", model: "R25", plat: "B 4321 XYZ" },
+    },
+    {
+      ...base,
       id: "seed-3",
       nomor: "M-001",
       kategori: "modif",
