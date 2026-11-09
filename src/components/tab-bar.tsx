@@ -3,13 +3,13 @@ import { Text } from "@/components/text";
 import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 
-const TAB: { nama: string; ikon: IconName; ke: "/home" | "/tiket" | "/profil" }[] = [
+const TAB: { nama: string; ikon: IconName; ke: "/home" | "/tiket" | "/profile" }[] = [
   { nama: "Beranda", ikon: "home", ke: "/home" },
   { nama: "Tiket", ikon: "ticket", ke: "/tiket" },
-  { nama: "Profil", ikon: "user", ke: "/profil" },
+  { nama: "Profile", ikon: "user", ke: "/profile" },
 ];
 
-export function TabBar({ aktif }: { aktif: "/home" | "/tiket" | "/profil" }) {
+export function TabBar({ aktif }: { aktif: "/home" | "/tiket" | "/profile" }) {
   return (
     <View className="flex-row border-t border-[#E3E1D9] bg-white pb-5 pt-2">
       {TAB.map((t) => {

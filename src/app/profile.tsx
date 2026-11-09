@@ -1,5 +1,3 @@
-import { View } from "react-native";
-import { Text } from "@/components/text";
 import {
   Card,
   Chip,
@@ -11,8 +9,10 @@ import {
   SectionTitle,
 } from "@/components/app-ui";
 import { TabBar } from "@/components/tab-bar";
-import { BENGKEL, TIPE_LABEL } from "@/lib/catalog";
+import { Text } from "@/components/text";
 import { useGarage, useSession, useTickets } from "@/hooks/use-store";
+import { BENGKEL, TIPE_LABEL } from "@/lib/catalog";
+import { View } from "react-native";
 
 export default function Profil() {
   const { session, signOut } = useSession();
@@ -22,7 +22,6 @@ export default function Profil() {
   const selesai = myTickets.filter((t) => t.status === "selesai").length;
   const aktif = myTickets.filter((t) => t.status === "menunggu" || t.status === "dikerjakan").length;
 
-  // ambil huruf depan nama buat avatar
   const inisial = (session?.name ?? "")
     .split(" ")
     .map((p) => p[0])
@@ -32,7 +31,7 @@ export default function Profil() {
 
   return (
     <View className="flex-1 bg-[#FAF7F0]">
-      <Page title="Profil" sub="Data akun dan motor yang tersimpan">
+      <Page title="Profile" sub="Data akun dan motor yang tersimpan">
         <Card>
           <View className="flex-row items-center gap-3">
             <View className="h-14 w-14 items-center justify-center rounded-full bg-[#1F1E1B]">
@@ -97,7 +96,7 @@ export default function Profil() {
           <OutlineButton label="Keluar dari akun" onPress={signOut} danger />
         </View>
       </Page>
-      <TabBar aktif="/profil" />
+      <TabBar aktif="/profile" />
     </View>
   );
 }

@@ -94,7 +94,7 @@ export default function Home() {
         <SectionTitle>Merk yang dilayani</SectionTitle>
         <ChipRow>
           {MERK_LIST.map((m) => (
-            <Chip key={m} label={m} active={false} onPress={() => router.replace("/profil")} />
+            <Chip key={m} label={m} active={false} onPress={() => router.replace("/profile")} />
           ))}
         </ChipRow>
         <Text className="mt-2 text-xs text-[#9C9A91]">

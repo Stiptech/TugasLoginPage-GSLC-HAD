@@ -43,10 +43,10 @@ export const KATEGORI: Record<
 
 export const BENGKEL = {
   nama: "Bengkel Roda Dua",
-  alamat: "Jl. Kemang Raya No. 24, Jakarta Selatan",
+  alamat: "Jl. Halo 123",
   buka: "08.00",
   tutup: "17.00",
-  telepon: "021 7220 118",
+  telepon: "081-900-884-8817",
   libur: "Minggu tutup",
 };
 
